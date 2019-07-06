@@ -1,3 +1,9 @@
+topCase = true;
+bottomCase=true;
+connectorTop = true;
+connectorBottom = true;
+batteryPack = true;
+
 module ledarray() {
     for(r =[0:4]) {
         for(c =[0:4]) {
@@ -53,8 +59,10 @@ module topcase(diameter=89.5, height=11.5) {
         translate([0,38,0]) cylinder(d=12, h=12, $fn=30); // USB
         translate([0,44,6]) cube([12,12,12], center=true); // USB
         translate([0,-8,0]) cylinder(d=4, h=3, $fn=30);  // RGB LED
-        translate([0,-25,1.5]) cube([34,6,3], center=true);  // Connector
-        translate([0,-20,1.5]) cube([15,6,3], center=true);  // motor Connector
+        if (connectorTop == true) {
+            translate([0,-25,1.5]) cube([34,6,3], center=true);  // Connector
+            translate([0,-20,1.5]) cube([15,6,3], center=true);  // motor Connector
+        }
         //translate([-30,-20.5,7]) rotate([0,0,30]) cube([10,10,10], center=true); // battery connector
         translate([-31,-20.5,0]) cylinder(d=12, h=12, $fn=30); // battery connector
         translate([-28.5,-8,0]) speaker(); //speaker
@@ -76,26 +84,36 @@ module topcase(diameter=89.5, height=11.5) {
     //translate([-8,28,1]) cylinder(d=4,h=3, $fn=30); // Reset Button
 }
 
-module bottomcase(diameter=95) {
+module bottomcase(height, diameter=95) {
+        
     difference(){
-        cylinder(d=diameter, h=18, $fn=6);
-        translate([0,0,2]) cylinder(d=diameter-5, h=18, $fn=6);
-        translate([0,-25,1.5]) cube([34,6,3], center=true);  // Connector
-        translate([0,-20,1.5]) cube([15,6,3], center=true);  // motor Connector
+        cylinder(d=diameter, h=height, $fn=6);
+        translate([0,0,2]) cylinder(d=diameter-5, h=height, $fn=6);
+        if (connectorBottom == true) {
+            translate([0,-25,1.5]) cube([34,6,3], center=true);  // Connector
+            translate([0,-20,1.5]) cube([15,6,3], center=true);  // motor Connector
+        }
         translate([0,43,15]) cube([12,12,10], center=true); // USB
     }
-    translate([19,16,2]) cylinder(d=6, h=15, $fn=30);
-    translate([19,-16,2]) cylinder(d=6, h=15, $fn=30);
-    translate([-19,16,2]) cylinder(d=6, h=15, $fn=30);
-    translate([-19,-16,2]) cylinder(d=6, h=15, $fn=30);
+    translate([19,16,2]) cylinder(d=6, h=height-3, $fn=30);
+    translate([19,-16,2]) cylinder(d=6, h=height-3, $fn=30);
+    translate([-19,16,2]) cylinder(d=6, h=height-3, $fn=30);
+    translate([-19,-16,2]) cylinder(d=6, h=height-3, $fn=30);
 }
 
        
 
-ledarray();
-pins();
-!topcase();
-bottomcase();
-button();
+//ledarray();
+//pins();
+
+height = (batteryPack == true) ? 18 : 6;
+
+if (topCase == true) {
+    translate([0,0,height+7]) rotate([0,180,0]) topcase();
+}
+if (bottomCase == true) {
+    bottomcase(height);
+}
+//button();
 
 
